@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Jantar dos Filósofos</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background:
+            radial-gradient(circle at top, #243b55, #141e30 65%);
+        color: #fff;
+        min-height: 100vh;
+        padding: 25px;
+    }
+
+    .container {
+        max-width: 1300px;
+        margin: auto;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    header h1 {
+        font-size: 2.4rem;
+        color: #fff;
+        margin-bottom: 8px;
+    }
+
+    header p {
+        color: #aebbd0;
+        font-size: 1rem;
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 20px;
+    }
+
+    .panel {
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 18px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 15px 40px rgba(0,0,0,.25);
+    }
+
+    /* =========================
+       MESA
+       ========================= */
+
+    .table-panel {
+        min-height: 650px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .table {
+        width: 430px;
+        height: 430px;
+        border-radius: 50%;
+        background:
+            radial-gradient(circle, #6f4e37, #3f2619);
+        border: 12px solid #9b6a45;
+        box-shadow:
+            0 0 0 8px rgba(0,0,0,.15),
+            inset 0 0 40px rgba(0,0,0,.5),
+            0 20px 50px rgba(0,0,0,.4);
+        position: relative;
+    }
+
+    .center {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: #29170e;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #d9b28b;
+        font-size: .9rem;
+        border: 2px solid #74472c;
+    }
+
+    /* =========================
+       FILÓSOFOS
+       ========================= */
+
+    .philosopher {
+        position: absolute;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: #34495e;
+        border: 4px solid #65788c;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        transition: .4s;
+        z-index: 5;
+    }
+
+    .philosopher .emoji {
+        font-size: 38px;
+    }
+
+    .philosopher .name {
+        font-size: .85rem;
+        font-weight: bold;
+        margin-top: 3px;
+    }
+
+    .philosopher .state {
+        font-size: .7rem;
+        color: #d9e2ec;
+        margin-top: 2px;
+    }
+
+    .p0 {
+        top: -45px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .p1 {
+        top: 105px;
+        right: -65px;
+    }
+
+    .p2 {
+        bottom: 10px;
+        right: 5px;
+    }
+
+    .p3 {
+        bottom: 10px;
+        left: 5px;
+    }
+
+    .p4 {
+        top: 105px;
+        left: -65px;
+    }
+
+    /* =========================
+       ESTADOS
+       ========================= */
+
+    .thinking {
+        background: #34495e;
+        border-color: #7f8c8d;
+    }
+
+    .hungry {
+        background: #9a641f;
+        border-color: #f1c40f;
+        box-shadow: 0 0 25px rgba(241,196,15,.45);
+    }
+
+    .eating {
+        background: #177245;
+        border-color: #2ecc71;
+        box-shadow: 0 0 30px rgba(46,204,113,.6);
+        transform: scale(1.08);
+    }
+
+    .blocked {
+        background: #852d35;
+        border-color: #ff5a65;
+        box-shadow: 0 0 25px rgba(255,80,90,.45);
+    }
+
+    .p0.eating,
+    .p0.blocked,
+    .p0.hungry {
+        transform: translateX(-50%) scale(1.08);
+    }
+
+    /* =========================
+       GARFOS
+       ========================= */
+
+    .fork {
+        position: absolute;
+        width: 65px;
+        height: 18px;
+        background: #b8c1ca;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0,0,0,.5);
+        z-index: 3;
+        transition: .3s;
+    }
+
+    .fork::after {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        right: -5px;
+        top: 0;
+        border-radius: 50%;
+        background: #7f8c8d;
+    }
+
+    .fork.used {
+        background: #f1c40f;
+        box-shadow: 0 0 15px rgba(241,196,15,.8);
+    }
+
+    .f0 {
+        top: 78px;
+        left: 165px;
+        transform: rotate(55deg);
+    }
+
+    .f1 {
+        top: 145px;
+        right: 25px;
+        transform: rotate(125deg);
+    }
+
+    .f2 {
+        bottom: 80px;
+        right: 85px;
+        transform: rotate(180deg);
+    }
+
+    .f3 {
+        bottom: 80px;
+        left: 85px;
+        transform: rotate(180deg);
+    }
+
+    .f4 {
+        top: 145px;
+        left: 25px;
+        transform: rotate(55deg);
+    }
+
+    /* =========================
+       PAINEL LATERAL
+       ========================= */
+
+    .side {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .card {
+        background: rgba(0,0,0,.2);
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    .card h2 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+        color: #dce6f2;
+    }
+
+    .legend {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: .85rem;
+        color: #bdc9d6;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .dot.green { background: #2ecc71; }
+    .dot.yellow { background: #f1c40f; }
+    .dot.gray { background: #7f8c8d; }
+    .dot.red { background: #ff5a65; }
+
+    .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stat {
+        background: rgba(255,255,255,.06);
+        border-radius: 10px;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .stat strong {
+        display: block;
+        font-size: 1.6rem;
+        color: #fff;
+    }
+
+    .stat span {
+        color: #91a0b2;
+        font-size: .75rem;
+    }
+
+    button {
+        border: none;
+        border-radius: 9px;
+        padding: 11px 15px;
+        cursor: pointer;
+        font-weight: bold;
+        color: white;
+        background: #3498db;
+        transition: .2s;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+    }
+
+    .buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .start {
+        background: #27ae60;
+        flex: 1;
+    }
+
+    .pause {
+        background: #e67e22;
+        flex: 1;
+    }
+
+    .reset {
+        background: #c0392b;
+        flex: 1;
+    }
+
+    /* =========================
+       LOG
+       ========================= */
+
+    .log {
+        height: 170px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: .75rem;
+        color: #aebbd0;
+    }
+
+    .log div {
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+
+    .log .eat {
+        color: #2ecc71;
+    }
+
+    .log .blocked-log {
+        color: #ff6b72;
+    }
+
+    .algorithm {
+        font-size: .8rem;
+        line-height: 1.5;
+        color: #aebbd0;
+    }
+
+    .algorithm code {
+        color: #2ecc71;
+    }
+
+    /* =========================
+       RESPONSIVO
+       ========================= */
+
+    @media(max-width: 900px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media(max-width: 550px) {
+        body {
+            padding: 10px;
+        }
+
+        .table {
+            width: 330px;
+            height: 330px;
+        }
+
+        .philosopher {
+            width: 85px;
+            height: 85px;
+        }
+
+        .philosopher .emoji {
+            font-size: 28px;
+        }
+
+        .p1 {
+            right: -35px;
+        }
+
+        .p4 {
+            left: -35px;
+        }
+
+        .p0 {
+            top: -35px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <h1>🍝 Jantar dos Filósofos</h1>
+    <p>Simulação visual de concorrência, exclusão mútua e disputa por recursos</p>
+</header>
+
+<div class="dashboard">
+
+    <!-- ================= MESA ================= -->
+
+    <section class="panel table-panel">
+
+        <div class="table">
+
+            <div class="center">
+                <div>
+                    <strong>Seção Crítica</strong><br>
+                    5 garfos compartilhados
+                </div>
+            </div>
+
+            <!-- Filósofos -->
+
+            <div class="philosopher p0 thinking" id="p0">
+                <div class="emoji">👨‍💻</div>
+                <div class="name">Sócrates</div>
+                <div class="state">Pensando</div>
+            </div>
+
+            <div class="philosopher p1 thinking" id="p1">
+                <div class="emoji">👨‍🔬</div>
+                <div class="name">Platão</div>
+                <div class="state">Pensando</div>
+            </div>
+
+            <div class="philosopher p2 thinking" id="p2">
+                <div class="emoji">🧑‍🏫</div>
+                <div class="name">Aristóteles</div>
+                <div class="state">Pensando</div>
+            </div>
+
+            <div class="philosopher p3 thinking" id="p3">
+                <div class="emoji">👨‍🎓</div>
+                <div class="name">Descartes</div>
+                <div class="state">Pensando</div>
+            </div>
+
+            <div class="philosopher p4 thinking" id="p4">
+                <div class="emoji">🧔</div>
+                <div class="name">Nietzsche</div>
+                <div class="state">Pensando</div>
+            </div>
+
+            <!-- Garfos -->
+
+            <div class="fork f0" id="f0"></div>
+            <div class="fork f1" id="f1"></div>
+            <div class="fork f2" id="f2"></div>
+            <div class="fork f3" id="f3"></div>
+            <div class="fork f4" id="f4"></div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= PAINEL ================= -->
+
+    <aside class="panel side">
+
+        <div class="card">
+
+            <h2>Controle da Simulação</h2>
+
+            <div class="buttons">
+                <button class="start" onclick="startSimulation()">
+                    ▶ Iniciar
+                </button>
+
+                <button class="pause" onclick="togglePause()">
+                    ⏸ Pausar
+                </button>
+
+                <button class="reset" onclick="resetSimulation()">
+                    ↻ Resetar
+                </button>
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Estado dos filósofos</h2>
+
+            <div class="legend">
+
+                <div class="legend-item">
+                    <span class="dot gray"></span>
+                    Pensando
+                </div>
+
+                <div class="legend-item">
+                    <span class="dot yellow"></span>
+                    Faminto
+                </div>
+
+                <div class="legend-item">
+                    <span class="dot green"></span>
+                    Comendo
+                </div>
+
+                <div class="legend-item">
+                    <span class="dot red"></span>
+                    Bloqueado
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Estatísticas</h2>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <strong id="meals">0</strong>
+                    <span>Refeições</span>
+                </div>
+
+                <div class="stat">
+                    <strong id="blocked">0</strong>
+                    <span>Bloqueios</span>
+                </div>
+
+                <div class="stat">
+                    <strong id="attempts">0</strong>
+                    <span>Tentativas</span>
+                </div>
+
+                <div class="stat">
+                    <strong id="time">0s</strong>
+                    <span>Tempo</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Algoritmo</h2>
+
+            <div class="algorithm">
+                Cada filósofo precisa adquirir dois recursos:
+
+                <br><br>
+
+                <code>garfo_esquerdo</code>
+
+                +
+
+                <code>garfo_direito</code>
+
+                <br><br>
+
+                Somente quando os dois estão disponíveis o filósofo
+                pode entrar na região crítica e comer.
+
+                <br><br>
+
+                Isso evita que dois filósofos utilizem o mesmo garfo
+                simultaneamente.
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Log de eventos</h2>
+
+            <div class="log" id="log"></div>
+
+        </div>
+
+    </aside>
+
+</div>
+
+</div>
+
+<script>
+
+const philosophers = [
+    "Sócrates",
+    "Platão",
+    "Aristóteles",
+    "Descartes",
+    "Nietzsche"
+];
+
+const states = [
+    "thinking",
+    "hungry",
+    "eating",
+    "blocked"
+];
+
+/*
+    Estado dos garfos.
+
+    false = livre
+    true  = ocupado
+*/
+
+let forks = [false, false, false, false, false];
+
+let running = false;
+let paused = false;
+
+let meals = 0;
+let blocked = 0;
+let attempts = 0;
+let seconds = 0;
+
+let timers = [];
+let clockTimer;
+
+/*
+    Cada filósofo possui:
+
+    garfo esquerdo = índice do próprio filósofo
+
+    garfo direito = próximo garfo da mesa
+*/
+
+function leftFork(philosopher) {
+    return philosopher;
+}
+
+function rightFork(philosopher) {
+    return (philosopher + 1) % 5;
+}
+
+/*
+    Atualiza visualmente o filósofo
+*/
+
+function setState(id, state) {
+
+    const philosopher =
+        document.getElementById("p" + id);
+
+    philosopher.classList.remove(
+        "thinking",
+        "hungry",
+        "eating",
+        "blocked"
+    );
+
+    philosopher.classList.add(state);
+
+    const stateElement =
+        philosopher.querySelector(".state");
+
+    const labels = {
+        thinking: "Pensando",
+        hungry: "Faminto",
+        eating: "Comendo",
+        blocked: "Bloqueado"
+    };
+
+    stateElement.textContent = labels[state];
+}
+
+/*
+    Atualiza os garfos
+*/
+
+function updateForks() {
+
+    for(let i = 0; i < 5; i++) {
+
+        const fork =
+            document.getElementById("f" + i);
+
+        fork.classList.toggle(
+            "used",
+            forks[i]
+        );
+    }
+}
+
+/*
+    Adiciona evento ao log
+*/
+
+function addLog(message, type = "") {
+
+    const log =
+        document.getElementById("log");
+
+    const line =
+        document.createElement("div");
+
+    line.className = type;
+
+    const timestamp =
+        new Date().toLocaleTimeString();
+
+    line.textContent =
+        `[${timestamp}] ${message}`;
+
+    log.prepend(line);
+
+    /*
+        Mantém apenas os últimos 30 eventos
+    */
+
+    while(log.children.length > 30) {
+        log.removeChild(log.lastChild);
+    }
+}
+
+/*
+    Tenta adquirir os dois garfos.
+
+    Esta é a parte principal da simulação.
+*/
+
+function tryEat(id) {
+
+    if(!running || paused) {
+        return;
+    }
+
+    attempts++;
+
+    updateStats();
+
+    const left =
+        leftFork(id);
+
+    const right =
+        rightFork(id);
+
+    setState(id, "hungry");
+
+    addLog(
+        `${philosophers[id]} está com fome e procura dois garfos.`
+    );
+
+    /*
+        Verifica se os dois recursos
+        estão disponíveis.
+    */
+
+    if(!forks[left] && !forks[right]) {
+
+        /*
+            Região crítica:
+            aquisição dos dois recursos.
+        */
+
+        forks[left] = true;
+        forks[right] = true;
+
+        updateForks();
+
+        setState(id, "eating");
+
+        addLog(
+            `${philosophers[id]} adquiriu os garfos ${left} e ${right} e começou a comer.`,
+            "eat"
+        );
+
+        /*
+            Tempo de alimentação
+        */
+
+        const eatingTime =
+            2000 + Math.random() * 3000;
+
+        const timer =
+            setTimeout(() => {
+
+                /*
+                    Libera os recursos.
+                */
+
+                forks[left] = false;
+                forks[right] = false;
+
+                updateForks();
+
+                meals++;
+
+                updateStats();
+
+                setState(id, "thinking");
+
+                addLog(
+                    `${philosophers[id]} terminou de comer e liberou os garfos.`,
+                    "eat"
+                );
+
+                /*
+                    Depois de comer,
+                    volta a pensar.
+                */
+
+                schedulePhilosopher(id);
+
+            }, eatingTime);
+
+        timers.push(timer);
+
+    } else {
+
+        /*
+            Não conseguiu os dois recursos.
+        */
+
+        blocked++;
+
+        updateStats();
+
+        setState(id, "blocked");
+
+        addLog(
+            `${philosophers[id]} está bloqueado: um dos garfos está ocupado.`,
+            "blocked-log"
+        );
+
+        /*
+            Tenta novamente depois.
+        */
+
+        const retry =
+            setTimeout(() => {
+
+                if(running && !paused) {
+                    tryEat(id);
+                }
+
+            }, 1200 + Math.random() * 1800);
+
+        timers.push(retry);
+    }
+}
+
+/*
+    Agenda o próximo ciclo do filósofo.
+*/
+
+function schedulePhilosopher(id) {
+
+    if(!running) {
+        return;
+    }
+
+    const thinkingTime =
+        1500 + Math.random() * 3500;
+
+    const timer =
+        setTimeout(() => {
+
+            if(!paused) {
+                tryEat(id);
+            } else {
+                schedulePhilosopher(id);
+            }
+
+        }, thinkingTime);
+
+    timers.push(timer);
+}
+
+/*
+    Inicia a simulação.
+*/
+
+function startSimulation() {
+
+    if(running) {
+        return;
+    }
+
+    running = true;
+    paused = false;
+
+    addLog("Simulação iniciada.");
+
+    philosophers.forEach((_, id) => {
+
+        setState(id, "thinking");
+
+        /*
+            Pequenos atrasos diferentes
+            tornam a simulação mais natural.
+        */
+
+        setTimeout(() => {
+            schedulePhilosopher(id);
+        }, Math.random() * 2000);
+
+    });
+
+    clockTimer =
+        setInterval(() => {
+
+            if(running && !paused) {
+                seconds++;
+                updateStats();
+            }
+
+        }, 1000);
+}
+
+/*
+    Pausar / continuar
+*/
+
+function togglePause() {
+
+    if(!running) {
+        return;
+    }
+
+    paused = !paused;
+
+    if(paused) {
+
+        addLog("Simulação pausada.");
+
+    } else {
+
+        addLog("Simulação continuada.");
+
+        philosophers.forEach((_, id) => {
+
+            const philosopher =
+                document.getElementById("p" + id);
+
+            /*
+                Somente filósofos que não estão
+                comendo precisam de novo agendamento.
+            */
+
+            if(
+                philosopher.classList.contains("thinking") ||
+                philosopher.classList.contains("blocked") ||
+                philosopher.classList.contains("hungry")
+            ) {
+                schedulePhilosopher(id);
+            }
+
+        });
+    }
+}
+
+/*
+    Reseta tudo
+*/
+
+function resetSimulation() {
+
+    running = false;
+    paused = false;
+
+    /*
+        Cancela todos os timers
+    */
+
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
+
+    clearInterval(clockTimer);
+
+    forks = [false, false, false, false, false];
+
+    meals = 0;
+    blocked = 0;
+    attempts = 0;
+    seconds = 0;
+
+    philosophers.forEach((_, id) => {
+        setState(id, "thinking");
+    });
+
+    updateForks();
+    updateStats();
+
+    document.getElementById("log").innerHTML = "";
+
+    addLog("Sistema resetado.");
+}
+
+/*
+    Atualiza estatísticas
+*/
+
+function updateStats() {
+
+    document.getElementById("meals")
+        .textContent = meals;
+
+    document.getElementById("blocked")
+        .textContent = blocked;
+
+    document.getElementById("attempts")
+        .textContent = attempts;
+
+    document.getElementById("time")
+        .textContent = seconds + "s";
+}
+
+/*
+    Inicialização
+*/
+
+updateForks();
+updateStats();
+
+addLog("Sistema pronto. Clique em Iniciar.");
+
+</script>
+
+</body>
+</html>
